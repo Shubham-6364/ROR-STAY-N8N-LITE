@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ROR STAY - Find your perfect rental property near colleges and offices">
+  <title>ROR STAY - Property Rentals Made Easy</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header">
+    <nav class="nav container">
+      <div class="nav-brand">
+        <h1 class="logo">🏠 ROR STAY</h1>
+      </div>
+      <ul class="nav-menu">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#listings">Listings</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="admin.html" class="btn-admin">Admin</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="home" class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <h1 class="hero-title">Find Your Perfect Stay</h1>
+        <p class="hero-subtitle">Quality rental properties near colleges, offices, and tech parks</p>
+        <div class="hero-cta">
+          <a href="#listings" class="btn btn-primary btn-lg">Browse Properties</a>
+          <a href="#contact" class="btn btn-outline btn-lg">Contact Us</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features">
+    <div class="container">
+      <h2 class="section-title">Why Choose ROR STAY?</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">✓</div>
+          <h3>Verified Properties</h3>
+          <p>All properties are personally verified by our team</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📍</div>
+          <h3>Prime Locations</h3>
+          <p>Near major colleges, offices, and tech hubs</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💰</div>
+          <h3>No Hidden Fees</h3>
+          <p>Transparent pricing with no surprises</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🤝</div>
+          <h3>Personal Support</h3>
+          <p>Dedicated assistance throughout your journey</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Listings Section -->
+  <section id="listings" class="listings-section">
+    <div class="container">
+      <h2 class="section-title">Available Properties</h2>
+
+      <!-- Filters -->
+      <div class="filters-card">
+        <div class="filters-grid">
+          <input type="text" id="filterLocation" placeholder="Search location..." class="input">
+          <select id="filterPriceRange" class="select">
+            <option value="">All Prices</option>
+            <option value="0-10000">Under ₹10,000</option>
+            <option value="10000-20000">₹10,000 - ₹20,000</option>
+            <option value="20000-30000">₹20,000 - ₹30,000</option>
+            <option value="30000-50000">₹30,000 - ₹50,000</option>
+            <option value="50000-">Above ₹50,000</option>
+          </select>
+          <select id="filterPropertyType" class="select">
+            <option value="">All Types</option>
+            <option value="Apartment">Apartment</option>
+            <option value="House">House</option>
+            <option value="Condo">Condo</option>
+          </select>
+          <button id="clearFilters" class="btn btn-outline">Clear Filters</button>
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div id="loading" class="loading" style="display: none;">
+        <div class="spinner"></div>
+        <p>Loading properties...</p>
+      </div>
+
+      <!-- Listings Grid -->
+      <div id="listingsGrid" class="listings-grid"></div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="contact-section">
+    <div class="container">
+      <h2 class="section-title">Get In Touch</h2>
+      <div class="contact-grid">
+        <!-- Contact Form -->
+        <div class="contact-form-card">
+          <h3>Submit Your Query</h3>
+          <form id="contactForm" class="form">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="name">Name *</label>
+                <input type="text" id="name" required class="input" placeholder="Your full name">
+              </div>
+              <div class="form-group">
+                <label for="phone">Phone *</label>
+                <input type="tel" id="phone" required class="input" placeholder="+91 9876543210">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email *</label>
+              <input type="email" id="email" required class="input" placeholder="your@email.com">
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="location">Select Location *</label>
+                <select id="location" required class="select">
+                  <option value="">Choose location</option>
+                  <option value="Durgapura">Durgapura</option>
+                  <option value="Gopalpura">Gopalpura</option>
+                  <option value="Jagatpura">Jagatpura</option>
+                  <option value="Malviya Nagar">Malviya Nagar</option>
+                  <option value="Pratap Nagar">Pratap Nagar</option>
+                  <option value="Sanganer">Sanganer</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="propertyType">Property Type *</label>
+                <select id="propertyType" required class="select">
+                  <option value="">Choose type</option>
+                  <option value="Single Room">Single Room</option>
+                  <option value="Flat">Flat</option>
+                  <option value="Apartment">Apartment</option>
+                  <option value="House">House</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="members">Number of Members *</label>
+                <input type="number" id="members" required class="input" placeholder="2" min="1" max="20">
+              </div>
+              <div class="form-group">
+                <label for="budget">Budget (₹/month) *</label>
+                <input type="number" id="budget" required class="input" placeholder="25000" min="0" step="1000">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="requirements">Additional Requirements</label>
+              <textarea id="requirements" rows="3" class="textarea"
+                placeholder="Any specific requirements or preferences..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Submit Query</button>
+          </form>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="contact-info">
+          <div class="info-card">
+            <h4>📞 Call Us</h4>
+            <p>+91 98765 43210</p>
+            <p>+91 87654 32109</p>
+          </div>
+          <div class="info-card">
+            <h4>📧 Email Us</h4>
+            <p>contact@rorstay.com</p>
+            <p>support@rorstay.com</p>
+          </div>
+          <div class="info-card">
+            <h4>💬 WhatsApp</h4>
+            <p>+91 98765 43210</p>
+            <p>Available 9 AM - 9 PM</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2026 ROR STAY. All rights reserved.</p>
+      <p class="footer-tech">Powered by n8n automation 🚀</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="../js/config.js"></script>
+  <script src="../js/contact.js"></script>
+  <script src="../js/listings.js"></script>
+</body>
+
+</html>

@@ -5,6 +5,8 @@
 
 let allListings = [];
 let filteredListings = [];
+let currentPage = 1;
+const itemsPerPage = 9;
 
 // Load listings on page load
 document.addEventListener('DOMContentLoaded', async function () {
@@ -56,10 +58,16 @@ function displayListings() {
                 <p>Try adjusting your filters to see more results</p>
             </div>
         `;
+        document.getElementById('paginationControls').innerHTML = '';
         return;
     }
 
-    listingsGrid.innerHTML = filteredListings.map((listing, listingIndex) => {
+    // Calculate pagination
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedListings = filteredListings.slice(startIndex, endIndex);
+
+    listingsGrid.innerHTML = paginatedListings.map((listing, listingIndex) => {
         const title = listing.title || 'Property';
         const location = listing.location || 'Location not specified';
         const price = Number(listing.price || 0).toLocaleString('en-IN');
@@ -94,6 +102,12 @@ function displayListings() {
         return `
             <div class="listing-card">
                 ${listing.verified ? '<span class="listing-badge">✓ VERIFIED</span>' : ''}
+                <button class="btn-icon-only btn-inquire-icon" onclick="contactProperty('${listing.id}', '${title}')" title="Inquire about this property" aria-label="Inquire">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                </button>
                 <div class="listing-image">
                     ${imagesHTML}
                     <div class="listing-price">₹${price}/mo</div>
@@ -117,13 +131,12 @@ function displayListings() {
                     ` : ''}
                     
                     ${description ? `<p class="listing-description">${description.substring(0, 100)}${description.length > 100 ? '...' : ''}</p>` : ''}
-                    <button class="btn btn-primary btn-block" onclick="contactProperty('${listing.id}', '${title}')">
-                        Interested
-                    </button>
                 </div>
             </div>
         `;
     }).join('');
+
+    renderPagination();
 }
 
 function changeImage(listingIndex, direction) {
@@ -227,6 +240,7 @@ function applyFilters() {
         return true;
     });
 
+    currentPage = 1;
     displayListings();
 }
 
@@ -244,6 +258,7 @@ function clearFilters() {
     if (furnishedFilter) furnishedFilter.value = '';
 
     filteredListings = [...allListings];
+    currentPage = 1;
     displayListings();
 }
 
@@ -277,7 +292,109 @@ function contactProperty(listingId, title) {
         // Pre-fill message
         const requirementsField = document.getElementById('requirements');
         if (requirementsField) {
-            requirementsField.value = `I'm interested in: ${title}. Please share more details.`;
+            requirementsField.value = `I'm interested in: ${title} (ID: ${listingId}). Please share more details.`;
         }
     }
+}
+
+/**
+ * Get total number of pages
+ */
+function getTotalPages() {
+    return Math.ceil(filteredListings.length / itemsPerPage);
+}
+
+/**
+ * Navigate to specific page
+ */
+function goToPage(pageNumber) {
+    const totalPages = getTotalPages();
+    if (pageNumber < 1 || pageNumber > totalPages) return;
+
+    currentPage = pageNumber;
+    displayListings();
+
+    // Scroll to top of listings
+    document.getElementById('listings').scrollIntoView({ behavior: 'smooth' });
+}
+
+/**
+ * Render pagination controls
+ */
+function renderPagination() {
+    const paginationContainer = document.getElementById('paginationControls');
+    const totalPages = getTotalPages();
+
+    if (totalPages <= 1) {
+        paginationContainer.innerHTML = '';
+        return;
+    }
+
+    let paginationHTML = '<div class="pagination-controls">';
+
+    // Previous button
+    paginationHTML += `
+        <button class="pagination-btn" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+            Previous
+        </button>
+    `;
+
+    // Page numbers
+    paginationHTML += '<div class="pagination-numbers">';
+
+    // Show max 7 page numbers
+    let startPage = Math.max(1, currentPage - 3);
+    let endPage = Math.min(totalPages, currentPage + 3);
+
+    // Adjust if at the beginning or end
+    if (currentPage <= 3) {
+        endPage = Math.min(7, totalPages);
+    }
+    if (currentPage >= totalPages - 2) {
+        startPage = Math.max(1, totalPages - 6);
+    }
+
+    // First page
+    if (startPage > 1) {
+        paginationHTML += `<button class="page-number" onclick="goToPage(1)">1</button>`;
+        if (startPage > 2) {
+            paginationHTML += '<span class="pagination-ellipsis">...</span>';
+        }
+    }
+
+    // Page numbers
+    for (let i = startPage; i <= endPage; i++) {
+        paginationHTML += `
+            <button class="page-number ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">
+                ${i}
+            </button>
+        `;
+    }
+
+    // Last page
+    if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+            paginationHTML += '<span class="pagination-ellipsis">...</span>';
+        }
+        paginationHTML += `<button class="page-number" onclick="goToPage(${totalPages})">${totalPages}</button>`;
+    }
+
+    paginationHTML += '</div>';
+
+    // Next button
+    paginationHTML += `
+        <button class="pagination-btn" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+            Next
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </button>
+    `;
+
+    paginationHTML += '</div>';
+
+    paginationContainer.innerHTML = paginationHTML;
 }
